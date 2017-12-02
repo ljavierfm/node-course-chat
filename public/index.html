@@ -8,5 +8,19 @@
 </head>
 <body>
     <p>Welcome to chap App!</p>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        let socket=io();
+
+        socket.on('connect',()=>{
+            console.log('Connected to server');
+        });
+
+        socket.on('disconnect',()=>{
+            console.log('Disconnected to server');
+        });
+        
+    </script>
 </body>
 </html>
