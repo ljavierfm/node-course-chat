@@ -12,33 +12,27 @@ const publicPath=path.join(__dirname,'../public');
 const port=process.env.PORT||3000;
 
 //Creates an Express application
-let app=express();
+const app=express();
 
-let server=http.createServer(app);
-let io=socketIO(server);
+const server=http.createServer(app);
+const io=socketIO(server);
 
 //middleware. serves static files
 app.use(express.static(publicPath));
 
-//registra un listener
-//socket representa uan conexion deu n cliente
+//Fired upon a connection from client
 io.on('connection',(socket)=>{
     console.log('New user connected');
 
-    socket.emit('newMessage',{
-        from:'John',
-        text:'Well, see yo then',
-        createAt:123123
-    });
-
-    socket.emit('newEmail',{
-        from:'bitoman@gmail.com',
-        text:'Mensaje de email',
-        createdAt:new Date()
-    });
-
+    //Se dispara cuando llega un evento desde un cliente tipo createMesage
     socket.on('createMessage',(message)=>{
         console.log('createMessage',message);
+        //transmite un evento a cada una de las conexiones establecidas
+        io.emit('newMessage',{
+            from:message.from,
+            text:message.text,
+            createdAt:new Date().getTime()
+        });
     });
 
     socket.on('disconnect',()=>{
