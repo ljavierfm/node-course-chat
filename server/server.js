@@ -46,12 +46,13 @@ io.on('connection',(socket)=>{
         //transmite un evento a cada una de las conexiones establecidas
         io.emit('newMessage', generateMessage(message.from,message.text));
 
-        callback('puto mensaje de texto');
+        callback();
     });
 
     //Se dispara cuando alguien envia localizacion
-    socket.on('createLocationMessage',(coords)=>{
+    socket.on('createLocationMessage',(coords,callback)=>{
         io.emit('newLocationMessage', generateLocationMessage('Admin',coords.latitude,coords.longitude));
+        callback();
     });
 
     socket.on('disconnect',()=>{
