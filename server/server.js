@@ -13,6 +13,7 @@ const path=require('path');
 const http=require('http');
 const express=require('express');
 const socketIO=require('socket.io');
+const { generateMessage}=require('./utils/message');
 
 //public path
 const publicPath=path.join(__dirname,'../public');
@@ -33,29 +34,17 @@ io.on('connection',(socket)=>{
     console.log('New user connected');
 
     //Admin text Welcome to the chat app
-    socket.emit('newMessage',{
-        from:'Admin',
-        text:'Welcome to the chat app',
-        createdAt: new Date().getTime()
-    });
+    socket.emit('newMessage', generateMessage('Admin','Welcome to the chat app'));
 
     //Admin sends new user Connect message to all users
-    socket.broadcast.emit('newMessage', {
-        from: 'Admin',
-        text: 'A new user joined',
-        createdAt:new Date().getTime()
-    });
+    socket.broadcast.emit('newMessage',generateMessage('Admin', 'New user joined'));
 
     //Se dispara cuando llega un evento desde un cliente tipo createMesage
     socket.on('createMessage',(message)=>{
         console.log('createMessage',message);
 
         //transmite un evento a cada una de las conexiones establecidas
-        io.emit('newMessage',{
-            from:message.from,
-            text:message.text,
-            createdAt:new Date().getTime()
-        });
+        io.emit('newMessage', generateMessage(message.from,message.text));
 
         //Se transmite a todos menos al emisor
         /* socket.broadcast.emit('newMessage',{
