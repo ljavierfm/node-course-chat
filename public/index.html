@@ -9,7 +9,17 @@
 <body>
     <p>Welcome to chap App!</p>
 
+    <ol id="messages">
+        <li>Lista de mensajes:</li>
+    </ol>
+    
+    <form id="message-form">
+        <input type="text" name="message" id="message" placeholder="Message">
+        <button>Send</button>
+    </form>
+
     <script src="/socket.io/socket.io.js"></script>
+    <script src="/js/libs/jquery-3.2.1.min.js"></script>
     <script src="/js/index.js"></script>
 </body>
 </html>

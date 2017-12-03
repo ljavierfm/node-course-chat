@@ -40,11 +40,13 @@ io.on('connection',(socket)=>{
     socket.broadcast.emit('newMessage',generateMessage('Admin', 'New user joined'));
 
     //Se dispara cuando llega un evento desde un cliente tipo createMesage
-    socket.on('createMessage',(message)=>{
+    socket.on('createMessage',(message,callback)=>{
         console.log('createMessage',message);
 
         //transmite un evento a cada una de las conexiones establecidas
         io.emit('newMessage', generateMessage(message.from,message.text));
+
+        callback('puto mensaje de texto');
 
         //Se transmite a todos menos al emisor
         /* socket.broadcast.emit('newMessage',{
