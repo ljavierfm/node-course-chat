@@ -1,6 +1,22 @@
 /*jshint esversion: 6 */
 let socket = io();
 
+function scrollToBottom(){
+    //selectors
+    let messages=$('#messages');
+    let newMessage=messages.children('li:last-child');
+    //Heights  
+    let clientHeight=messages.prop('clientHeight');
+    let scrollTop=messages.prop('scrollTop');
+    let scrollHeight=messages.prop('scrollHeight');
+    let newMessageHeight=newMessage.innerHeight();
+    let lastMessageHight=newMessage.prev().innerHeight();
+
+    if(clientHeight+scrollTop+newMessageHeight>=scrollHeight){
+        messages.scrollTop(scrollHeight);
+    }
+}
+
 //No uso funciones flecha para hacerlo compatible en navegadores
 socket.on('connect', function() {
     console.log('Connected to server');
@@ -13,6 +29,7 @@ socket.on('disconnect', function () {
 
 //Se recibe nuevo mensaje
 socket.on('newMessage',function(message){
+    scrollToBottom();
     let formattedTime = moment(message.createdAt).format('h:mm a');
     let template = $('#message-template').html();
     let html=Mustache.render(template,{
@@ -26,6 +43,7 @@ socket.on('newMessage',function(message){
 
 //Se recibe nuevo mensaje de localización
 socket.on('newLocationMessage', function (message) {
+    scrollToBottom();
     let formattedTime = moment(message.createdAt).format('h:mm a');
     let template = $('#location-message-template').html();
     let html=Mustache.render(template,{
