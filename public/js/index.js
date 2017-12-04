@@ -10,9 +10,9 @@ function scrollToBottom(){
     let scrollTop=messages.prop('scrollTop');
     let scrollHeight=messages.prop('scrollHeight');
     let newMessageHeight=newMessage.innerHeight();
-    let lastMessageHight=newMessage.prev().innerHeight();
+    let lastMessageHeight=newMessage.prev().innerHeight();
 
-    if(clientHeight+scrollTop+newMessageHeight>=scrollHeight){
+    if (clientHeight + scrollTop + newMessageHeight + lastMessageHeight>=scrollHeight){
         messages.scrollTop(scrollHeight);
     }
 }
@@ -29,7 +29,7 @@ socket.on('disconnect', function () {
 
 //Se recibe nuevo mensaje
 socket.on('newMessage',function(message){
-    scrollToBottom();
+    
     let formattedTime = moment(message.createdAt).format('h:mm a');
     let template = $('#message-template').html();
     let html=Mustache.render(template,{
@@ -39,11 +39,12 @@ socket.on('newMessage',function(message){
     });
 
     $('#messages').append(html);
+    scrollToBottom();
 });
 
 //Se recibe nuevo mensaje de localización
 socket.on('newLocationMessage', function (message) {
-    scrollToBottom();
+    
     let formattedTime = moment(message.createdAt).format('h:mm a');
     let template = $('#location-message-template').html();
     let html=Mustache.render(template,{
@@ -53,6 +54,7 @@ socket.on('newLocationMessage', function (message) {
     });
 
     $('#messages').append(html);
+    scrollToBottom();
 });
 
 //Comportamiento boton enviar mensaje
