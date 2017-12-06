@@ -14,6 +14,7 @@ const http=require('http');
 const express=require('express');
 const socketIO=require('socket.io');
 const { generateMessage, generateLocationMessage}=require('./utils/message');
+const {isRealString}=require('./utils/validation');
 
 //public path
 const publicPath=path.join(__dirname,'../public');
@@ -33,12 +34,24 @@ app.use(express.static(publicPath));
 io.on('connection',(socket)=>{
     console.log('New user connected');
 
-    //Admin text Welcome to the chat app
-    socket.emit('newMessage', generateMessage('Admin','Welcome to the chat app'));
+    //Se dispara cuando alguien se une desde login
+    socket.on('join',(params,callback)=>{
+        if (!(isRealString(params.name)) || !(isRealString(params.room))){
+            console.log(`${params.name} y ${params.room}`)
+            callback('Name and room are required');
+        }
 
-    //Admin sends new user Connect message to all users
-    socket.broadcast.emit('newMessage',generateMessage('Admin', 'New user joined'));
+        //Adds the client to the room, and fires optionally a callback with err signature (if any).
+        socket.join(params.room);
 
+        //Admin text Welcome to the chat app
+        socket.emit('newMessage', generateMessage('Admin', 'Welcome to the chat app'));
+
+        //Admin sends new user Connect message to all users in the room
+        socket.broadcast.to(params.room).emit('newMessage',generateMessage('Admin',`${params.name} has joined`));
+        callback();
+    });
+    
     //Se dispara cuando llega un evento desde un cliente tipo createMesage
     socket.on('createMessage',(message,callback)=>{
         console.log('createMessage',message);

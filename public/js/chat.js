@@ -20,7 +20,18 @@ function scrollToBottom(){
 
 //No uso funciones flecha para hacerlo compatible en navegadores
 socket.on('connect', function() {
-    console.log('Connected to server');
+    let params=jQuery.deparam(window.location.search);
+
+    
+    //tercer parametro es el callback que se recibe desde el servidor
+    socket.emit('join',params,function(err){
+        if (err){
+            alert(err);
+            window.location.href='/';
+        }else{
+            console.log('No error');
+        }
+    })
 });
 
 socket.on('disconnect', function () {
