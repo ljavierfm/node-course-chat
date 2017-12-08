@@ -1,4 +1,6 @@
 /*jshint esversion: 6 */
+/* Parte del cliente */
+
 let socket = io();
 
 function scrollToBottom(){
@@ -19,6 +21,7 @@ function scrollToBottom(){
 }
 
 //No uso funciones flecha para hacerlo compatible en navegadores
+//Se conecta al socket
 socket.on('connect', function() {
     let params=jQuery.deparam(window.location.search);
 
@@ -31,11 +34,22 @@ socket.on('connect', function() {
         }else{
             console.log('No error');
         }
-    })
+    });
 });
 
 socket.on('disconnect', function () {
     console.log('Disconnected to server');
+});
+
+//se actualiza la lista de usuarios del chat
+socket.on('updateUserList',function(users){
+    let ol=$('<ol></ol>');
+
+    users.forEach(function(user) {
+        ol.append($('<li></li>').text(user));
+    });
+
+    $('#users').html(ol);
 });
 
 

@@ -1,17 +1,36 @@
-[
-    {
-        id:'/#123asdasd',
-        name:'Andrew',
-        room: 'The office Fans'
+class Users{
+    constructor (){
+        this.users=[];
     }
-]
 
-let users=[];
+    addUser(id,name,room){
+        let user={id,name,room};
+        this.users.push(user);
+        return user;
+    }
 
-let addUser=(id,name,room)=>{
-    //No es necesario añadir los parametros por ES6
-    users.push({});
+    removeUser(id){
+        let user = this.getUser(id);
+
+        if(user){
+            this.users=this.users.filter((user)=>user.id!==id);
+        }
+
+        return user;
+    }
+
+    getUser(id){
+        return this.users.filter((user)=>user.id===id)[0];
+    }
+
+    getUsersList(room){
+        //Crea array con objetos que cumplen la funcion de la iteracion
+        let users=this.users.filter((user)=>user.room===room);
+        let userNames=users.map((user)=>user.name);
+
+        return userNames;
+    }
 }
 
-module.exports={addUser};
+module.exports={Users};
 
