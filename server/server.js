@@ -66,18 +66,26 @@ io.on('connection',(socket)=>{
     
     //Se dispara cuando llega un evento desde un cliente tipo createMesage
     socket.on('createMessage',(message,callback)=>{
-        console.log('createMessage',message);
+        let user=users.getUser(socket.id);
 
-        //transmite un evento a cada una de las conexiones establecidas
-        io.emit('newMessage', generateMessage(message.from,message.text));
-
+        if(user && isRealString(message.text)){
+            //transmite un evento a cada una de las conexiones establecidas
+            io.to(user.room).emit('newMessage', generateMessage(user.name, message.text));
+            
+        }
         callback();
+        
     });
 
     //Se dispara cuando alguien envia localizacion
     socket.on('createLocationMessage',(coords,callback)=>{
-        io.emit('newLocationMessage', generateLocationMessage('Admin',coords.latitude,coords.longitude));
-        callback();
+        let user = users.getUser(socket.id);
+
+        if(user){
+            io.to(user.room).emit('newLocationMessage', generateLocationMessage(user.name, coords.latitude, coords.longitude));
+        }
+        //callback();
+        
     });
 
     //El usuario se desconecta
